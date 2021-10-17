@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  ansible:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - .:/app:ro
+      - ~/.ssh/id_ed25519_rpi:/root/.ssh/id_ed25519_rpi:ro
+      - ~/.ssh/id_ed25519_rpi.pub:/root/.ssh/id_ed25519_rpi.pub:ro
+      
+    tty: true

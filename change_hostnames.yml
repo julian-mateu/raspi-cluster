@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Set Hostname
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+        use: debian
+    - name: Replace hostname in /etc/hosts
+      ansible.builtin.replace:
+        path: /etc/hosts
+        regexp: "127.0.1.1\t\traspberrypi"
+        replace: "127.0.1.1\t\t{{ inventory_hostname }}"
