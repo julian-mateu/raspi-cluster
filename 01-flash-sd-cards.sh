@@ -28,7 +28,7 @@ function flash_sd_card() {
         echo "you selected ${sd_card_device}"
 
         diskutil info "${sd_card_device}"
-        ask_for_confirmation "Will use ${sd_card_device}" 
+        ask_for_confirmation "Will use ${sd_card_device}"
 
         sd_card_raw_device=$(echo "${sd_card_device}" | awk -F"/" '{print "/"$2"/r"$3}')
         diskutil info "${sd_card_raw_device}"
@@ -38,8 +38,8 @@ function flash_sd_card() {
         sd_card_raw_device=$(echo "${sd_card_device}" | awk -F"/" '{print "/"$2"/r"$3}')
     fi
 
-    if [[ ! -e  "${IMAGE_FILE_NAME}" ]]; then
-        >&2 echo "ERROR: ${IMAGE_FILE_NAME} file does not exist"
+    if [[ ! -e "${IMAGE_FILE_NAME}" ]]; then
+        echo >&2 "ERROR: ${IMAGE_FILE_NAME} file does not exist"
         exit 1
     fi
 
@@ -68,8 +68,8 @@ function flash_sd_card() {
 		}
 		EOF
 
-    ls -la /Volumes/boot | grep ssh
-    ls -la /Volumes/boot | grep wpa_supplicant.conf
+    ls -la /Volumes/boot/ssh
+    ls -la /Volumes/boot/wpa_supplicant.conf
     diskutil unmountDisk "${sd_card_device}"
 }
 

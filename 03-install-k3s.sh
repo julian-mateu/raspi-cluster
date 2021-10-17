@@ -47,13 +47,6 @@ function remove() {
         -i inventory/sample/hosts.ini
 }
 
-last=0
-allow_quit() {
-    [ $(date +%s) -lt $(( $last + 1 )) ] && exit
-    last=$(date +%s)
-}
-trap allow_quit 2
-
 if [[ ! -e k3s-ansible ]]; then
     git clone https://github.com/k3s-io/k3s-ansible.git k3s-ansible
 fi
@@ -63,11 +56,10 @@ if ! docker ps -a | grep -q 'raspi-cluster_ansible_1'; then
 fi
 
 # remove
-# setup
+setup
 
 # sleep 10
 reboot_and_wait
-
 
 export -f exec_in_docker
 watch --difference=permanent 'echo "Waiting until kubectl nodes are up (press ^C to continue)" && kubectl get nodes'
