@@ -14,11 +14,15 @@ fi
 
 docker_compose_up
 
+wait_for_cluster
+
 exec_in_docker \
-    python termplates/render_template.py \
-    termplates/inventory_template.yml.j2 "${RASPI_MASTER_IP}" "${RASPI_WORKER_IPS[@]}" \
+    python templates/render_template.py \
+    templates/inventory_template.yml.j2 "${RASPI_MASTER_IP}" "${RASPI_WORKER_IPS[@]}" \
     >inventory.yml
 
 exec_in_docker ansible-playbook a01_copy_keys.yml
 exec_in_docker ansible-playbook a02_change_password.yml
 exec_in_docker ansible-playbook a03_change_hostnames.yml
+
+reboot_and_wait

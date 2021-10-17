@@ -1,0 +1,16 @@
+FROM golang:latest
+ARG INGRESS_IP
+ENV INGRESS_IP=$INGRESS_IP
+
+WORKDIR /build
+
+RUN apt-get update -y
+RUN apt-get install -y build-essential
+
+COPY ./cluster-monitoring .
+
+RUN make vendor
+RUN make
+RUN make change_suffix suffix=$INGRESS_IP.np.io
+
+WORKDIR /app

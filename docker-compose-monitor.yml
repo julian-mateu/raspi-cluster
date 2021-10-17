@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  monitoring:
+    build:
+      dockerfile: Dockerfile.monitor
+      context: .
+      args:
+        INGRESS_IP: $INGRESS_IP
+    volumes:
+      - ./cluster-monitoring:/app
+      
+    tty: true

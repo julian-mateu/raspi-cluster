@@ -1,0 +1,25 @@
+---
+- hosts: raspi-master
+  tasks:
+    - name: Copy manifests directory
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/cluster-monitoring/manifests"
+        dest: /home/pi
+
+    - name: Apply setup manifests to the cluster.
+      become: yes
+      register: out
+      shell: |
+        kubectl apply -f /home/pi/manifests/setup
+    - debug: var=out.stdout_lines
+
+    - name: Apply manifests to the cluster.
+      become: yes
+      register: out
+      shell: |
+        kubectl apply -f /home/pi/manifests
+      # TODO: investigate usage of the community task
+      # community.kubernetes.k8s:
+      #   state: present
+      #   src: /home/pi/manifests/setup
+    - debug: var=out.stdout_lines

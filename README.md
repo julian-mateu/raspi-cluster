@@ -32,7 +32,7 @@ EMAIL="your@email.com"
         "RASPI_WORKER_3_IP"
     )
     ```
-1. Run the setup script, which runs the ansible playbooks using the docker container:
+1. Run the setup script, which runs the ansible playbooks using the docker container (it will prompt for a new password):
     ```sh
     ./02-setup-pi-cluster.sh
     ```

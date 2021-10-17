@@ -21,7 +21,9 @@ function flash_sd_card() {
 
     # sd_card_device="/dev/disk3"
 
+    set +u
     if [[ ! "${sd_card_device}" ]]; then
+        set -u
         read -p "type the desired device: " -r sd_card_device
         echo "you selected ${sd_card_device}"
 
@@ -32,6 +34,7 @@ function flash_sd_card() {
         diskutil info "${sd_card_raw_device}"
         ask_for_confirmation "Will use ${sd_card_raw_device}"
     else
+        set -u
         sd_card_raw_device=$(echo "${sd_card_device}" | awk -F"/" '{print "/"$2"/r"$3}')
     fi
 
@@ -45,7 +48,7 @@ function flash_sd_card() {
     pv "./${IMAGE_FILE_NAME}" | sudo dd bs=1m of="${sd_card_raw_device}"
     sync
 
-    sleep 5 # Add a sleep to wait until the volume is present (ls below fails with permission denied)
+    sleep 10 # Add a sleep to wait until the volume is present (ls below fails with permission denied)
 
     # Enable SSH
     ls /Volumes/boot
@@ -65,7 +68,8 @@ function flash_sd_card() {
 		}
 		EOF
 
-    ls -la /Volumes/boot
+    ls -la /Volumes/boot | grep ssh
+    ls -la /Volumes/boot | grep wpa_supplicant.conf
     diskutil unmountDisk "${sd_card_device}"
 }
 
@@ -80,3 +84,5 @@ function ask_for_confirmation() {
 
 download_image
 flash_sd_card
+
+say "done" || echo -e "\a"

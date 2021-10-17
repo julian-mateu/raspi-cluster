@@ -5,3 +5,5 @@ env
 k3s-ansible
 inventory.yml
 kube_config
+cluster-monitoring
+node_modules
