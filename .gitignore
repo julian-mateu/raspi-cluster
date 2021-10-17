@@ -2,3 +2,6 @@
 env
 *.zip
 *.img
+k3s-ansible
+inventory.yml
+kube_config

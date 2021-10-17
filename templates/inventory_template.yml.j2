@@ -1,0 +1,16 @@
+---
+raspi_workers:
+  hosts:{% for node_ip in node_ips %}
+    raspi-worker{{ "%02d"|format(loop.index) }}:
+      ansible_host: {{ node_ip }}{% endfor %}
+
+raspi_cluster:
+  hosts:
+    raspi-master:
+      ansible_host: {{ master_ip }}
+  children:
+    raspi_workers:
+  vars:
+    ansible_user: pi
+    ansible_ssh_private_key_file: ~/.ssh/id_ed25519_rpi
+    ansible_ssh_pass: raspberry
