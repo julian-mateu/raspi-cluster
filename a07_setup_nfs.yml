@@ -1,0 +1,43 @@
+---
+- hosts: raspi-master
+  become: yes
+  vars:
+    nfs_exports: ["/mnt/ssd *(rw,no_root_squash,insecure,async,no_subtree_check,anonuid=1000,anongid=1000)"]
+  
+  handlers:
+    - name: reload nfs
+      command: 'exportfs -ra'
+  
+  tasks:
+
+    - name: Ensure NFS utilities are installed
+      apt:
+        name:
+          - nfs-common
+          - nfs-kernel-server
+        state: present
+
+    - name: Ensure directories to export exist
+      file:  # noqa 208
+        path: "{{ item.strip().split()[0] }}"
+        state: directory
+      with_items: "{{ nfs_exports }}"
+
+    - name: Copy exports file
+      template:
+        src: "{{ playbook_dir }}/templates/exports.j2"
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: 0644
+      notify: reload nfs
+
+    # Might need another reboot and reload nfs
+    # https://github.com/hashicorp/vagrant/issues/8704
+
+    - name: Ensure nfs is running
+      service:
+        name: nfs-kernel-server
+        state: started
+        enabled: yes
+      when: nfs_exports|length

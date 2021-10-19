@@ -1,0 +1,52 @@
+---
+- hosts: raspi-master
+  become: yes
+  tasks:
+    - name: List Disks
+      register: out
+      shell: |
+        fdisk -l
+    - debug: var=out.stdout_lines
+
+    - pause:
+        prompt: "Enter the disk device (example /dev/sda) "
+        echo: yes
+      register: result
+    - set_fact:
+        disk_device: "{{ result.user_input }}"
+    - debug: var=disk_device
+
+    # - name: Create partition
+    #   become: yes
+    #   register: out 
+    #   shell: |
+    #     echo mkfs.ext4 {{ disk_device }}
+    # - debug: var=out.stdout_lines
+
+    - name: Create a new ext4 primary partition
+      parted:
+        device: "{{ disk_device }}"
+        number: 1
+        fs_type: ext4
+        state: present
+
+    - name: Format partition with filesystem
+      filesystem:
+        fstype: ext4
+        dev: "{{ disk_device }}"
+
+    - name: Create mount directory
+      file:
+        path: /mnt/ssd
+        state: directory
+        owner: pi
+        group: pi
+        mode: 0775
+
+    - name: Mount directory
+      ansible.posix.mount:
+        fstype: ext4
+        src: "{{ disk_device }}"
+        path: /mnt/ssd
+        state: mounted
+        boot: yes

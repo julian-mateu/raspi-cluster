@@ -12,7 +12,7 @@ Running ansible directly on a Mac can bring some problems with dependencies, so 
 ## 1 - Flashing the SD cards
 1. Add the required env variables to the `.env` file
 ```sh
-COUNTRY="Your countrie's 2 letter ISO code"
+COUNTRY="Your country's 2 letter ISO code"
 NETWORK_SSID="Your WiFi SSID"
 NETWORK_PASSWORD="Your WiFi pass"
 EMAIL="your@email.com"
@@ -55,6 +55,12 @@ EMAIL="your@email.com"
     open -a "Google Chrome" "https://grafana.${INGRESS_IP}.nip.io"
     ```
 
+## 4- (Optional) Setting up NFS with an external hard drive
+1. Connect the hard drive to the master node (using the usb 3.0 blue port).
+1. Run the setup disk script which will run `fdisk -l` and prompt you for the device name:
+    ```sh
+    05-setup-nfs-disk.sh
+    ```
 # Useful commands
 This project uses a docker container to run ansible commands. You can execute commands in the cluster by first setting up the docker container with `docker compose` (you might have it running from the setup):
 ```sh
@@ -108,9 +114,31 @@ Note that fans are recommended. In my case the temperature of the idle cluster r
 **Grand total: £368.91**
 
 # Next steps
-- Configure a VPN
-- Add a pi hole with DNS in the cluster
-- Add a load balancer to access it from the public internet
+- How to access it from the external world? (Especially if your ISP has a NAT as is my case) - see the [investigations](./spikes):
+    - **~~[Dataplicity](https://www.dataplicity.com/devices)~~** -> Did not work
+    - **~~[localtunnel](https://github.com/localtunnel/localtunnel)~~** -> Works for HTTP/TCP but not for UDP, so I could not use the VPN (Or I would have to make adjustments to it)
+    - **~~[ngrok](https://ngrok.com/)~~**: ([article](https://medium.com/oracledevs/expose-docker-container-services-on-the-internet-using-the-ngrok-docker-image-3f1ea0f9c47a)) -> Works, but I can only have 1 tunnel active at the time in the free version, and I don't think I can use UDP for free.
+    - NOTE: the previous 2 options could work using something like [nginx for TCP and UDP](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/)
+    Another solution could be configure the VPN to use TCP, and run a load balancer that routes traffic to the VPN and other servers (I'm not sure if this could be done based on the path or some other criteria)
+    - **full host** in something like AWS EC2 (free tier for 1 year, which is not terrible if the setup can be automated): -> As the ideal setup is both a public VPN server and a public website (which can access anything if it is the load balancer), I believe this is the only feasable option given the above research, which runs both the VPN server and the load balancer.
+- Improve host security ([ssh config](https://cryptsus.com/blog/how-to-secure-your-ssh-server-with-public-key-elliptic-curve-ed25519-crypto.html), firewall, etc), eg 
+- Domain name (Freenom needs to be used from the country that created the account. It does not work together with cloudflare. It's probably better to pay for a cheap domain name)
+- Reverse proxy in Nginx (with HTTPS) -> EC2
+    - Add a load balancer to access it from the public internet
+        - [Setup Nginx Proxy Manager](https://www.youtube.com/watch?v=P3imFC7GSr0)
+        - [Secure Nginx Proxy Manager](https://www.youtube.com/watch?v=UfCkwlPIozw)
+        - [Access lists for Nginx Proxy Manager](https://www.youtube.com/watch?v=G9voYZejH48)
+    - [Get a wildcard cert](https://www.youtube.com/watch?v=TBGOJA27m_0)
+- Configure a VPN -> EC2
+- Others from [this blog](https://greg.jeanmart.me/2020/04/13/deploy-nextcloud-on-kuberbetes--the-self-hos/)
+    - Add a pi hole with DNS in the cluster
+    - set up a NAS (from the blog, also [this video](https://www.youtube.com/watch?v=gyMpI8csWis))
+- Use Vault to setup a KPI (manage certificates, secrets, etc)
+- email server? (google business domain and also free drive for backup)
+- RAID 1 disk with cheap usb controllers (See [Rpi NAS with RAID](https://www.jeffgeerling.com/blog/2020/building-fastest-raspberry-pi-nas-sata-raid))
+- Automated backups
+    - NAS
+    - AWS S3 Glacier
 
 
 <!--References-->

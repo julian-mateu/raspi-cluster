@@ -1,0 +1,27 @@
+---
+- hosts: raspi_workers
+  become: yes
+  tasks:
+
+    - name: Ensure NFS utilities are installed
+      apt:
+        name:
+          - nfs-common
+        state: present
+
+    - name: Create mount directory
+      file:
+        path: /mnt/ssd
+        state: directory
+        owner: pi
+        group: pi
+        mode: 0775
+
+    - name: Mount directory
+      ansible.posix.mount:
+        fstype: nfs 
+        src: "{{ hostvars['raspi-master']['ansible_host'] }}:/mnt/ssd"
+        path: /mnt/ssd
+        state: mounted
+        opts: rw
+        boot: yes
