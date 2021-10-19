@@ -19,6 +19,7 @@ function download_image() {
 function flash_sd_card() {
     diskutil list
 
+    # Define the variable here to avoid asking for confirmation
     # sd_card_device="/dev/disk3"
 
     set +u

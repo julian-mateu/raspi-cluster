@@ -55,11 +55,11 @@ if ! docker ps -a | grep -q 'raspi-cluster_ansible_1'; then
     docker_compose_up
 fi
 
+# Uncomment this line and comment the `setup` to uninstall k3s
 # remove
 setup
 
 # sleep 10
 reboot_and_wait
 
-export -f exec_in_docker
 watch --difference=permanent 'echo "Waiting until kubectl nodes are up (press ^C to continue)" && kubectl get nodes'

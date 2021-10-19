@@ -1,9 +1,16 @@
-.env
+# Virtual env
 env
+
+# File with secret env variables
+.env
+
+# Downloaded images for the SD card
 *.zip
 *.img
-k3s-ansible
+
+# Generated inventory as it contains custom data
 inventory.yml
-kube_config
+
+# Cloned repos
+k3s-ansible
 cluster-monitoring
-node_modules

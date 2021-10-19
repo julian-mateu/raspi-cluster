@@ -16,13 +16,6 @@
         disk_device: "{{ result.user_input }}"
     - debug: var=disk_device
 
-    # - name: Create partition
-    #   become: yes
-    #   register: out 
-    #   shell: |
-    #     echo mkfs.ext4 {{ disk_device }}
-    # - debug: var=out.stdout_lines
-
     - name: Create a new ext4 primary partition
       parted:
         device: "{{ disk_device }}"
