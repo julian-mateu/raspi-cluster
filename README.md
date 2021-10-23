@@ -57,11 +57,17 @@ default user `pi` and password `raspberry`
     open -a "Google Chrome" "https://grafana.${INGRESS_IP}.nip.io"
     ```
 
-## 4- (Optional) Setting up NFS with an external hard drive
+# Optional Extras
+## 4- Setting up NFS with an external hard drive
 1. Connect the hard drive to the master node (using the usb 3.0 blue port).
 1. Run the setup disk script which will run `fdisk -l` and prompt you for the device name:
     ```sh
-    05-setup-nfs-disk.sh
+    ./05-setup-nfs-disk.sh
+    ```
+## 5- PiHole (Uses NFS for the PVC)
+1. Run the script, will prompt for the admin password:
+    ```sh
+    ./06-setup-pihole.sh
     ```
 # Useful commands
 This project uses a docker container to run ansible commands. You can execute commands in the cluster by first setting up the docker container with `docker compose` (you might have it running from the setup):
@@ -116,7 +122,7 @@ Note that fans are recommended. In my case the temperature of the idle cluster r
 **Grand total: £368.91**
 
 # Next steps
-- Refactor the repo to organise the files, improve code quality (maybe add automated tests?), 
+- [ ] Refactor the repo to organise the files, improve code quality (maybe add automated tests?), 
 and consistency (e.g. jinja2 templates vs `sed` vs `cat <<EOF`, or gloal variables vs `.env` file).
 - How to access it from the external world? (Especially if your ISP has a NAT as is my case) - see the [investigations](./spikes):
     - **~~[Dataplicity](https://www.dataplicity.com/devices)~~** -> Did not work
@@ -143,12 +149,12 @@ and consistency (e.g. jinja2 templates vs `sed` vs `cat <<EOF`, or gloal variabl
         - [Access lists for Nginx Proxy Manager](https://www.youtube.com/watch?v=G9voYZejH48)
     - [Get a wildcard cert](https://www.youtube.com/watch?v=TBGOJA27m_0)
 - Configure a VPN -> EC2
-- Others from [this blog](https://greg.jeanmart.me/2020/04/13/deploy-nextcloud-on-kuberbetes--the-self-hos/)
-    - Add a pi hole [with DNS](https://www.youtube.com/watch?v=FnFtWsZ8IP0&t=927s) in the cluster
+- [ ] Others from [this blog](https://greg.jeanmart.me/2020/04/13/deploy-nextcloud-on-kuberbetes--the-self-hos/)
+    - [x] Add a pi hole [with DNS](https://www.youtube.com/watch?v=FnFtWsZ8IP0&t=927s) in the cluster
     - set up a NAS (from the blog, also [this video](https://www.youtube.com/watch?v=gyMpI8csWis))
 - Use Vault to setup a KPI (manage certificates, secrets, etc)
 - email server? (I believe google business allows to use a domain and also provides free unlimited drive for backups)
-- RAID 1 disk with cheap usb flash sticks 
+- [x] RAID 1 disk with cheap usb flash sticks 
 (See [Rpi NAS with RAID](https://www.jeffgeerling.com/blog/2020/building-fastest-raspberry-pi-nas-sata-raid))
 - Automated backups
     - NAS

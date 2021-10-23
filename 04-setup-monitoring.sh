@@ -38,7 +38,7 @@ INGRESS_IP=${INGRESS_IP} docker_compose_up_with_file docker-compose-monitor.yml
 # shellcheck disable=SC2097,SC2098
 INGRESS_IP=${INGRESS_IP} exec_in_docker_with_file docker-compose-monitor.yml monitoring make change_suffix suffix="${INGRESS_IP}.nip.io"
 
-if ! docker ps -a | grep -q 'raspi-cluster_ansible_1'; then
+if ! docker ps -a | grep -q 'raspi-cluster-ansible-1'; then
     docker_compose_up
 fi
 

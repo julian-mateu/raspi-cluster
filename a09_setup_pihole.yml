@@ -1,0 +1,51 @@
+---
+- hosts: raspi-master
+  become: yes
+  vars_prompt:
+    - name: password
+      private: yes
+      prompt: Enter the admin password
+
+  tasks:
+
+    - name: Copy manifests directory
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/pihole"
+        dest: /home/pi/pihole_manifests
+
+    - name: Create namespace
+      register: out
+      shell: |
+        kubectl apply -f /home/pi/pihole_manifests/pihole/namespace.yml
+    - debug: var=out.stdout_lines
+
+    - name: Create persistent volume
+      register: out
+      shell: |
+        kubectl apply -f /home/pi/pihole_manifests/pihole/persistentVolume.yml
+    - debug: var=out.stdout_lines
+
+    - name: Create persistent volume claim
+      register: out
+      shell: |
+        kubectl apply -f /home/pi/pihole_manifests/pihole/persistentVolumeClaim.yml
+    - debug: var=out.stdout_lines
+
+    - name: Create secret to store admin password
+      shell: |
+        kubectl create secret generic pihole-secret \
+        --from-literal=password={{ password }} \
+        --namespace pihole || true
+
+    - name: Create Unbound DNS deployment
+      register: out
+      shell: |
+        kubectl apply -f /home/pi/pihole_manifests/pihole/unboundDeployment.yml
+    - debug: var=out.stdout_line
+    
+    - name: Create Unbound DNS Cluster IP
+      register: out
+      shell: |
+        kubectl apply -f /home/pi/pihole_manifests/pihole/unboundClusterIP.yml
+    - debug: var=out.stdout_lines
+

@@ -19,6 +19,7 @@
       shell: |
         kubectl apply -f /home/pi/manifests
       # TODO: investigate usage of the community task
+      #  see https://github.com/ansible/ansible/issues/50529
       # community.kubernetes.k8s:
       #   state: present
       #   src: /home/pi/manifests/setup

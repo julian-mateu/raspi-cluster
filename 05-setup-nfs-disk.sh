@@ -7,7 +7,7 @@ source .env
 # shellcheck source=commons.sh
 source commons.sh
 
-if ! docker ps -a | grep -q 'raspi-cluster_ansible_1'; then
+if ! docker ps -a | grep -q 'raspi-cluster-ansible-1'; then
     docker_compose_up
 fi
 

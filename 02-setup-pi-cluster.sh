@@ -9,6 +9,8 @@ source .env
 source commons.sh
 
 if [[ ! -e "${SSH_KEY}" ]]; then
+    echo "${SSH_KEY} does not exist, creating. Note that a password will cause problems with Ansible!"
+    echo
     ssh-keygen -t ed25519 -C "${EMAIL}" -f "${SSH_KEY}"
 fi
 
