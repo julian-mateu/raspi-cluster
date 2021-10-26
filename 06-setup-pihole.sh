@@ -23,8 +23,16 @@ exec_in_docker ansible-playbook a09_setup_pihole.yml
 
 sleep 60
 
+helm repo add mojo2600 https://mojo2600.github.io/pihole-kubernetes/
+helm repo update
+
 helm install pihole mojo2600/pihole \
   --namespace pihole \
   --values ./pihole/pihole.values.yml
 
 kubectl get pods -n pihole -o wide -w
+
+# helm repo add keel https://charts.keel.sh 
+# helm repo update
+# kubectl create namespace keel
+# helm upgrade --install keel --namespace=keel keel/keel --set helmProvider.enabled="false" 

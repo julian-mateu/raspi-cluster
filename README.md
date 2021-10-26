@@ -159,7 +159,10 @@ and consistency (e.g. jinja2 templates vs `sed` vs `cat <<EOF`, or gloal variabl
 - Automated backups
     - NAS
     - AWS S3 Glacier
-
+- How to keep the cluster up to date?
+    - Providing the `"latest"` tag and `imagePullPolicy: Always` will update the image when the pod restarts (maybe a cron job could restart pods?)
+    - Some tools seem to be using a fixed version (Grafana + prometheus), which makes sense because major version upgrades could break everything (probably the best strategy is to have some notification when there are new versions, and update manually if it's a major version)
+    - A tool like `keel` (but it does not seem to have an up-to date arm image)
 
 <!--References-->
 
